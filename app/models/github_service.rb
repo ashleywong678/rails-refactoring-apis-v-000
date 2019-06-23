@@ -1,6 +1,6 @@
 class GithubService
 
-  attr_accessor :access_token
+  attr_accessor :access_token, :username
 
   def initialize(options = {})
     self.access_token = options['access_token']
@@ -13,13 +13,9 @@ class GithubService
   end
 
   def get_username
-    resp = Faraday.get("https://api.github.com/user") do |req|
-      req.params["client_id"] = ENV["GITHUB_CLIENT"]
-      req.params["client_secret"] = ENV["GITHUB_SECRET"]
-      req.params["code"] = params[:code]
-      req.params["Authroization"] = self.token
-    end
-    body = JSON.parse(resp.body)
+    user_response = Faraday.get "https://api.github.com/user", {}, {'Authorization' => "token #{self.access_token}", 'Accept' => 'application/json'}
+    user_json = JSON.parse(user_response.body)
+    self.username = user_json["login"]
   end
 
 end
