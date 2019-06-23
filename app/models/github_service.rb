@@ -6,4 +6,8 @@ class GithubService
     self.access_token = options['access_token']
   end
 
+  def authenticate!
+
+  end
+  
 end
