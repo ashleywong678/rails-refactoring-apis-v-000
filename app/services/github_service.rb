@@ -21,14 +21,11 @@ class GithubService
   def get_repos
     resp = Faraday.get "https://api.github.com/user/repos" , {}, {'Authorization' => "token #{self.access_token}", 'Accept' => 'application/json'}
     access_hash = JSON.parse(resp.body)
-    # binding.pry
-    @repos = []
-    access_hash.map {|info| @repos << GithubRepo.new(name: info['name'], url: info['html_url'])}
-    @repos
+    access_hash.map {|info| GithubRepo.new(info)}
   end
 
-  def create_repo
-    resp = Faraday.post "https://api.github.com/user/repos", {client_id: client, client_secret: secret, code: code}, {'Accept' => 'application/json'}
+  def create_repo(name)
+    Faraday.post "https://api.github.com/user/repos", {name: name}.to_json, {'Authorization' => "token #{@access_token}", 'Accept' => 'application/json'}
   end
 
 end
